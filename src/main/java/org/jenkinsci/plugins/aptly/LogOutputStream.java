@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.aptly;
+package io.jenkins.plugins.aptlyrest;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,4 +31,3 @@ public class LogOutputStream extends java.io.OutputStream {
         }
     }
 }
-

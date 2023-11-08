@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins.aptly;
+package io.jenkins.plugins.aptlyrest;
 
 
 
@@ -39,13 +39,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.conn.ssl.*;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.GetRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
-
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.HttpRequest;
+import kong.unirest.GetRequest;
+import kong.unirest.HttpRequestWithBody;
+import kong.unirest.MultipartBody;
 
 /**
  * This class implements a subset of the Aptly REST client calls
@@ -61,7 +61,6 @@ public class AptlyRestClient {
 
     public AptlyRestClient(PrintStream logger, AptlySite site)
     {
-        
         this.mSite = site;
         this.mLogger = logger;
         if (Boolean.parseBoolean(site.getEnableSelfSigned())){
@@ -73,26 +72,26 @@ public class AptlyRestClient {
                 CloseableHttpClient httpclient = HttpClients.custom()
                     .setSSLSocketFactory(sslsf)
                     .build();
-                Unirest.setHttpClient(httpclient);
+                // Unirest.setHttpClient(httpclient);
             } catch (Exception ex) {
                 logger.println("Failed to setup ssl self");
             }
         }
     }
-    
-    
+
+
     /** Sends the request, after doing the common configuration (accept header,
      * auth...) and returns the answer as JSON, or throws the error.
      * @param req the UniRest HttpRequest to send
      * @return the answer as JSON
      */
     private JSONObject sendRequest(HttpRequest req) throws AptlyRestException
-    {   
+    {
         HttpResponse<String> response;
         if(!mSite.getUsername().isEmpty()){
                 req.basicAuth(mSite.getUsername(), mSite.getPassword());
         }
-        
+
         req = req.header("accept", "application/json");
         try {
             response = req.asString();
@@ -100,21 +99,21 @@ public class AptlyRestClient {
         catch (UnirestException ex) {
             throw new AptlyRestException("API request failed: " + ex.getMessage());
         }
-        
+
         if (response.getStatus() != 200){
-            throw new AptlyRestException("API request failed, response from server: " + 
+            throw new AptlyRestException("API request failed, response from server: " +
                                           response.getStatusText());
-        } 
+        }
         mLogger.printf("Aptly API response code: <%d>, body: <%s>\n",
                     response.getStatus(), response.getBody().trim());
-        
+
         JSONObject json = new JSONObject();
-        
+
         try {
             json = new JSONObject(response.getBody());
         }
         catch(org.json.JSONException ex){
-            // grr, the upload request gives back a JSON array, 
+            // grr, the upload request gives back a JSON array,
             // not object as all the others, so let the hack begin...
             try {
                 JSONArray ja = new JSONArray(response.getBody());
@@ -126,8 +125,8 @@ public class AptlyRestClient {
         }
         return json;
     }
-    
-    
+
+
     public String getAptlyServerVersion() throws AptlyRestException
     {
         String retval;
@@ -143,15 +142,19 @@ public class AptlyRestClient {
         }
     }
 
-    
+
     public void uploadFiles(List<File> filepaths, String uploaddir) throws AptlyRestException
     {
         mLogger.println("upload dir name: " + uploaddir);
+        // for (File file : filepaths) {
+        //     mLogger.println(file.getPath());
+        // }
         try {
-            HttpRequestWithBody req = Unirest.post(mSite.getUrl() +
-                                         "/api/files/" + uploaddir);
-            req.field("file", filepaths);
-            JSONObject res = sendRequest(req);
+            HttpRequestWithBody req = Unirest.post(mSite.getUrl() + "/api/files/" + uploaddir);
+            MultipartBody mreq = req.multiPartContent();
+            mreq = mreq.field("files[]", filepaths);
+            // req = req.contentType("multipart/form-data");
+            JSONObject res = sendRequest(mreq);
         }
         catch (AptlyRestException ex) {
             mLogger.printf("Failed to upload the packages: %s\n", ex.toString());
@@ -159,7 +162,6 @@ public class AptlyRestClient {
         }
     }
 
-    
     public void addUploadedFilesToRepo(String reponame, String uploaddir) throws AptlyRestException
     {
         // add to the repo
@@ -182,14 +184,14 @@ public class AptlyRestClient {
         try {
             HttpRequestWithBody req = Unirest.put(mSite.getUrl() + "/api/publish/"
                                                   + prefix + "/" + distribution);
-            req = req.header("Content-Type", "application/json");
-            JSONObject options = new JSONObject();
-            options.put("ForceOverwrite", true);
-            options.put("Signing",buildSigningJson());
-            req.body(options.toString());
+            // req = req.header("Content-Type", "application/json");
+            // JSONObject options = new JSONObject();
+            // options.put("ForceOverwrite", true);
+            // options.put("Signing",buildSigningJson());
+            // req.body(options.toString());
             JSONObject res = sendRequest(req);
-            
-        } 
+
+        }
         catch (AptlyRestException ex) {
             mLogger.printf("Failed to publish repo: " + ex.toString());
             throw ex;
@@ -203,33 +205,33 @@ public class AptlyRestClient {
             retval.put("Skip",true);
             return retval;
         }
-        
+
         retval.put("Skip",false);
-        
+
         if (!mSite.getPassword().isEmpty()){
             retval.put("Batch",true);
         }
-        
+
         if (!mSite.getGpgKeyname().isEmpty()){
             retval.put("GpgKey",mSite.getGpgKeyname());
         }
-        
+
         if (!mSite.getGpgKeyring().isEmpty()){
             retval.put("Keyring",mSite.getGpgKeyring());
         }
-        
+
         if (!mSite.getGpgSecretKeyring().isEmpty()){
             retval.put("SecretKeyring",mSite.getGpgSecretKeyring());
         }
-        
+
         if ("passphrase".equals(mSite.getGpgPassphraseType())){
                 retval.put("Passphrase",mSite.getGpgPassphrase());
         }
-        
+
         else if ("passphrasefile".equals(mSite.getGpgPassphraseType())){
                 retval.put("Passphrase",mSite.getGpgPassphraseFile());
         }
-        
+
         return retval;
     }
 }

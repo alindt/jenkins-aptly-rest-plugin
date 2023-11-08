@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <div>
   This plugin helps to publish .deb packages via <a href="http://aptly.info">Aptly</a> repository manager.
 </div>

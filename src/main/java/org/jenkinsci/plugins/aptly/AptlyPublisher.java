@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins.aptly;
+package io.jenkins.plugins.aptlyrest;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -250,7 +250,7 @@ public class AptlyPublisher extends Notifier {
             try {
                 client.addUploadedFilesToRepo(reponame, uploaddirid);
             } catch (Throwable th) {
-                th.printStackTrace(listener.error("Failed to upload files"));
+                th.printStackTrace(listener.error("Failed to add packages to repo"));
                 build.setResult(Result.UNSTABLE);
                 return false;
             }
@@ -259,7 +259,7 @@ public class AptlyPublisher extends Notifier {
             try {
                 client.updatePublishRepo(repoprefix, distribution);
             } catch (Throwable th) {
-                th.printStackTrace(listener.error("Failed to upload files"));
+                th.printStackTrace(listener.error("Failed to update published repo"));
                 build.setResult(Result.UNSTABLE);
                 return false;
             }
@@ -365,9 +365,8 @@ public class AptlyPublisher extends Notifier {
         * @see hudson.model.Descriptor#configure(org.kohsuke.stapler.StaplerRequest)
         */
         @Override
-        public boolean configure(StaplerRequest req, JSONObject formData) 
+        public boolean configure(StaplerRequest req, JSONObject formData)
         {
-            
             List<AptlySite> asites = req.bindJSONToList(AptlySite.class,
                                         formData.get("site"));
             sites.replaceBy(asites);
@@ -379,12 +378,12 @@ public class AptlyPublisher extends Notifier {
         * @param request the current {@link javax.servlet.http.HttpServletRequest}
         */
         public FormValidation doLoginCheck(
-                                           @QueryParameter("aptly.profileName") final String sitename,
-                                           @QueryParameter("aptly.url") final String url,
-                                           @QueryParameter("aptly.enableSelfSigned") final String enableselfsigned,
-                                           @QueryParameter("aptly.timeOut") final String timeout,
-                                           @QueryParameter("aptly.username") final String username,
-                                           @QueryParameter("aptly.password") final String password)
+                                           @QueryParameter("aptlyrest.profileName") final String sitename,
+                                           @QueryParameter("aptlyrest.url") final String url,
+                                           @QueryParameter("aptlyrest.enableSelfSigned") final String enableselfsigned,
+                                           @QueryParameter("aptlyrest.timeOut") final String timeout,
+                                           @QueryParameter("aptlyrest.username") final String username,
+                                           @QueryParameter("aptlyrest.password") final String password)
         {
             LOG.info("Login check for " + sitename);
             PrintStream logstream = new PrintStream(new LogOutputStream(), true);

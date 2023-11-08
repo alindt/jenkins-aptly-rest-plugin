@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins.aptly;
+package io.jenkins.plugins.aptlyrest;
 
 /**
  * This  class implements an Exception specific for the AptlyRestClient class

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins.aptly;
+package io.jenkins.plugins.aptlyrest;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -39,7 +39,7 @@ public class AptlySite {
     {
         PASSPHRASE,PASSPHRASEFILE
     }
-    
+
     /** The profile name. */
     private String mProfileName;
 
@@ -63,24 +63,24 @@ public class AptlySite {
 
     /** */
     private String mGpgKeyname;
-    
+
     /** */
     private String mGpgKeyring;
-    
+
     /** */
     private String mGpgSecretKeyring;
-    
+
     /** */
     private String mGpgPassphraseType;
-    
+
     /** */
     private String mGpgPassphrase;
-    
+
     /** */
     private String mGpgPassphraseFile;
 
-    
-        
+
+
     /**
     * Instantiates a new Aptly site.
     */
@@ -103,16 +103,16 @@ public class AptlySite {
     *          the username
     * @param password
     *          the password
-     * @throws org.jenkinsci.plugins.aptly.AptlyRestException
+     * @throws io.jenkins.plugins.aptlyrest.AptlyRestException
     */
     @DataBoundConstructor
-    public AptlySite(String profileName, String url, boolean enableSelfSigned, 
-                     int timeOut, String username, String password, Boolean gpgenabled, 
+    public AptlySite(String profileName, String url, boolean enableSelfSigned,
+                     int timeOut, String username, String password, Boolean gpgenabled,
                      String gpgkeyname, String gpgkeyring, String gpgsecretkeyring,
                      String gpgpassphrasetype, String gpgpassphrase, String gpgpassphrasefile)
                      throws AptlyRestException
     {
-        
+
         this.mProfileName = profileName;
         this.mUrl = url;
         this.mEnableSelfSigned = enableSelfSigned;
@@ -126,7 +126,7 @@ public class AptlySite {
         this.mGpgPassphraseType = gpgpassphrasetype;
         this.mGpgPassphrase = gpgpassphrase;
         this.mGpgPassphraseFile = gpgpassphrasefile;
-        
+
     }
 
     /**
@@ -137,9 +137,9 @@ public class AptlySite {
     * @param timeOut  the time out
     * @param username the username
     * @param password the password
-    * @throws org.jenkinsci.plugins.aptly.AptlyRestException
+    * @throws io.jenkins.plugins.aptlyrest.AptlyRestException
     */
-    public AptlySite(String url, String enableSelfSigned, String timeOut, 
+    public AptlySite(String url, String enableSelfSigned, String timeOut,
                      String username, String password) throws AptlyRestException
     {
         this.mUrl = url;
@@ -319,35 +319,35 @@ public class AptlySite {
     {
         return this.mProfileName;
     }
-    
+
     public String getGpgEnabled()
     {
         return "" + mGpgEnabled;
     }
-    
+
     @DataBoundSetter
     public void setGpgEnabled(boolean mGpgEnabled)
     {
         this.mGpgEnabled = mGpgEnabled;
     }
-    
-    public String getGpgKeyname() 
+
+    public String getGpgKeyname()
     {
         return mGpgKeyname;
     }
-    
+
     @DataBoundSetter
-    public void setGpgKeyname(String gpgKeyname) 
+    public void setGpgKeyname(String gpgKeyname)
     {
         this.mGpgKeyname = gpgKeyname;
     }
-    
-    public String getGpgKeyring() 
+
+    public String getGpgKeyring()
     {
         return mGpgKeyring;
     }
-    @DataBoundSetter 
-    public void setGpgKeyring(String gpgKeyring) 
+    @DataBoundSetter
+    public void setGpgKeyring(String gpgKeyring)
     {
         this.mGpgKeyring = gpgKeyring;
     }
@@ -361,7 +361,7 @@ public class AptlySite {
     {
         this.mGpgSecretKeyring = gpgSecretKeyring;
     }
-    
+
     public String getGpgPassphraseType()
     {
         return mGpgPassphraseType;
@@ -371,7 +371,7 @@ public class AptlySite {
     {
         this.mGpgPassphraseType = gpgPassphraseType;
     }
-    
+
     public String getGpgPassphrase()
     {
         return mGpgPassphrase;
