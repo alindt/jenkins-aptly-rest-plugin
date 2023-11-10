@@ -5,8 +5,7 @@ import java.io.PrintStream;
 import java.util.logging.Logger;
 
 /**
-* Helper class to profide a PrintStream for AptlyRestClient during
-* logging checking
+* Helper class to provide a PrintStream for AptlyRestClient during logging check
 *
 */
 public class LogOutputStream extends java.io.OutputStream {

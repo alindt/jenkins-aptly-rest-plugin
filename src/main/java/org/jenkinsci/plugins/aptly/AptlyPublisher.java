@@ -58,7 +58,7 @@ import org.apache.commons.collections.iterators.ArrayIterator;
 
 
 /**
- * This class implements the Aptly publisher, takes care of orchestring the
+ * This class implements the Aptly publisher, takes care of orchestrating the
  * configuration and the uploading/publishing process
  * @author $Author: zgyarmati <mr.zoltan.gyarmati@gmail.com>
  */
@@ -78,7 +78,7 @@ public class AptlyPublisher extends Notifier {
     public AptlyPublisher() { }
 
     /**
-    * The constructor which take a configured Aptly repo site name to use
+    * The constructor which takes a configured Aptly repo site name to use
     *
     * @param repoSiteName
     *          the name of the aptly repo configuration to use
@@ -116,9 +116,8 @@ public class AptlyPublisher extends Notifier {
     }
 
     /**
-    * This method returns the configured AptlySite object which match the repoSiteName.
-    * (see Manage Hudson and System
-    * Configuration point FTP)
+    * This method returns the configured AptlySite object which matches the repoSiteName.
+    * (see Manage Hudson and System Configuration point FTP)
     *
     * @return the matching AptlySite or null
     */
@@ -213,7 +212,7 @@ public class AptlyPublisher extends Notifier {
                  build.setResult(Result.UNSTABLE);
                  return false;
             }
-            //copy the remote file into the local dir, collect all of the
+            // copy the remote file into the local dir, collect all of the
             // filepaths into 'filelist', and pass the list for uploading
             ArrayIterator filesiterator = new ArrayIterator(remoteFiles);
             List<File>  filelist = new ArrayList<File>();
@@ -278,7 +277,6 @@ public class AptlyPublisher extends Notifier {
         private final CopyOnWriteList<PackageItem> packageItems = new CopyOnWriteList<PackageItem>();
         private final static Logger LOG = Logger.getLogger(DescriptorImpl.class.getName());
 
-
         /**
         * The default constructor.
         */
@@ -288,7 +286,7 @@ public class AptlyPublisher extends Notifier {
         }
 
         /**
-        * The name of the plugin to display them on the project configuration web page.
+        * The name of the plugin to display on the project configuration web page.
         *
         * {@inheritDoc}
         *
@@ -297,7 +295,7 @@ public class AptlyPublisher extends Notifier {
         */
         @Override
         public String getDisplayName() {
-            return "Publish built packages via Aptly";
+            return "Publish packages via Aptly";
         }
 
         /**
@@ -339,7 +337,6 @@ public class AptlyPublisher extends Notifier {
            }
            return pub;
         }
-
 
         /**
         * The getter of the sites field.

@@ -62,7 +62,7 @@ public class PackageItem implements Describable<PackageItem>, Serializable {
     }
 
     /**
-     * Get the list of the filenames.
+     * Get the list of filenames.
      * @return the comma-separated list as String
      */
     public String getSourceFiles() {
@@ -92,7 +92,6 @@ public class PackageItem implements Describable<PackageItem>, Serializable {
     public String getDistributionName(){
         return this.distributionName;
     }
-
 
      /**
      * Get the descriptor.

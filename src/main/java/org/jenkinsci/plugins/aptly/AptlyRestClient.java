@@ -24,8 +24,6 @@
 
 package io.jenkins.plugins.aptlyrest;
 
-
-
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -49,12 +47,10 @@ import kong.unirest.MultipartBody;
 
 /**
  * This class implements a subset of the Aptly REST client calls
- * as documented at
- * http://www.aptly.info/doc/api/
+ * as documented at http://www.aptly.info/doc/api/
  * @author $Author: zgyarmati <mr.zoltan.gyarmati@gmail.com>
  */
 public class AptlyRestClient {
-
 
     private AptlySite   mSite;
     private PrintStream mLogger;
@@ -74,7 +70,7 @@ public class AptlyRestClient {
                     .build();
                 // Unirest.setHttpClient(httpclient);
             } catch (Exception ex) {
-                logger.println("Failed to setup ssl self");
+                logger.println("Failed to setup SSL self");
             }
         }
     }
@@ -126,7 +122,6 @@ public class AptlyRestClient {
         return json;
     }
 
-
     public String getAptlyServerVersion() throws AptlyRestException
     {
         String retval;
@@ -141,7 +136,6 @@ public class AptlyRestClient {
             throw e;
         }
     }
-
 
     public void uploadFiles(List<File> filepaths, String uploaddir) throws AptlyRestException
     {

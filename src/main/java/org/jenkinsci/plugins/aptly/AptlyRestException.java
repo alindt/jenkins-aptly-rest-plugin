@@ -25,7 +25,7 @@
 package io.jenkins.plugins.aptlyrest;
 
 /**
- * This  class implements an Exception specific for the AptlyRestClient class
+ * This class implements an Exception specific for the AptlyRestClient class
  * @author $Author: zgyarmati <mr.zoltan.gyarmati@gmail.com>
  */
 public class AptlyRestException extends Exception {
