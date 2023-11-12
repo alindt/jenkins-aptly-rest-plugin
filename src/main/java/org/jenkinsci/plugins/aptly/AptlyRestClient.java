@@ -45,6 +45,9 @@ import kong.unirest.GetRequest;
 import kong.unirest.HttpRequestWithBody;
 import kong.unirest.MultipartBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * This class implements a subset of the Aptly REST client calls
  * as documented at http://www.aptly.info/doc/api/
@@ -183,6 +186,26 @@ public class AptlyRestClient {
                                     .header("Content-Type", "application/json")
                                     .body(options.toString())
                                     .asJson();
+
+        mLogger.printf("Response: (code %d)\n%s\n",
+                            req.getStatus(),
+                            prettyPrintJson(req.getBody().toString())
+        );
+    }
+
+    private String prettyPrintJson(String uglyJsonString)
+    {
+        String prettyJson = "";
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Object jsonObject = objectMapper.readValue(uglyJsonString, Object.class);
+            prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+        }
+        catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+
+        return prettyJson;
     }
 
     private JSONObject buildSigningJson()
