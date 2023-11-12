@@ -175,20 +175,14 @@ public class AptlyRestClient {
     // update published repo
     public void updatePublishRepo(String prefix, String distribution) throws AptlyRestException
     {
-        try {
-            HttpRequestWithBody req = Unirest.put(mSite.getUrl() + "/api/publish/"
-                                                  + prefix + "/" + distribution);
-            req = req.header("Content-Type", "application/json");
-            JSONObject options = new JSONObject();
-            options.put("ForceOverwrite", true);
-            // options.put("Signing",buildSigningJson());
-            req.body(options.toString());
-            JSONObject res = sendRequest(req);
-        }
-        catch (AptlyRestException ex) {
-            mLogger.printf("Failed to publish repo: " + ex.toString());
-            throw ex;
-        }
+        JSONObject options = new JSONObject();
+        options.put("ForceOverwrite", true);
+        // options.put("Signing",buildSigningJson());
+
+        HttpResponse req = Unirest.put(mSite.getUrl() + "/api/publish/" + prefix + "/" + distribution)
+                                    .header("Content-Type", "application/json")
+                                    .body(options.toString())
+                                    .asJson();
     }
 
     private JSONObject buildSigningJson()
