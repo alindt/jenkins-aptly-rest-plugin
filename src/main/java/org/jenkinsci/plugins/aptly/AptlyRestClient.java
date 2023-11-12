@@ -103,8 +103,10 @@ public class AptlyRestClient {
             throw new AptlyRestException("API request failed, response from server: " +
                                           response.getStatusText());
         }
-        mLogger.printf("Aptly API response code: <%d>, body: <%s>\n",
-                    response.getStatus(), response.getBody().trim());
+        mLogger.printf("Aptly API response (code %d)\n%s\n",
+                        response.getStatus(),
+                        prettyPrintJson(response.getBody())
+        );
 
         JSONObject json = new JSONObject();
 
@@ -167,10 +169,10 @@ public class AptlyRestClient {
                                             "/api/repos/"+ reponame +"/file/" + uploaddir);
             req.queryString("forceReplace", "1");
             JSONObject res = sendRequest(req);
-            mLogger.printf("Uploaded packages added to repo, response: %s\n", res.toString());
+            mLogger.printf("Uploaded packages added to repo, response: \n%s\n", prettyPrintJson(res.toString()));
         }
         catch (AptlyRestException ex) {
-            mLogger.printf("Failed to add uploaded packages to repo: %s\n", ex.toString());
+            mLogger.printf("Failed to add uploaded packages to repo: \n%s\n", ex.toString());
             throw ex;
         }
     }
@@ -187,7 +189,7 @@ public class AptlyRestClient {
                                     .body(options.toString())
                                     .asJson();
 
-        mLogger.printf("Response: (code %d)\n%s\n",
+        mLogger.printf("Aptly API response: (code %d)\n%s\n",
                             req.getStatus(),
                             prettyPrintJson(req.getBody().toString())
         );
